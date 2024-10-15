@@ -1,0 +1,46 @@
+# Ignorar carpetas generadas por Unity en cualquier subdirectorio
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Bb]uild/
+**/[Ll]ogs/
+**/[Mm]emoryCaptures/
+**/[Ss]treamingAssets/Build/
+**/[Uu]ser[Ss]ettings/
+
+# Archivos del sistema operativo
+**/.DS_Store
+**/.DS_Store?
+**/._*
+**/[Tt]humbs.db
+**/[Dd]esktop.ini
+
+# Archivos de solución y proyecto de C#
+**/*.csproj
+**/*.sln
+**/*.suo
+**/*.tmp
+**/*.user
+**/*.userprefs
+**/*.pidb
+**/*.booproj
+**/*.svd
+
+# Archivos de compilación
+**/*.pdb
+**/*.mdb
+**/*.opendb
+**/*.VC.db
+
+# Archivos específicos de IDEs
+**/.idea/
+**/*.sublime-project
+**/*.sublime-workspace
+**/.vscode/
+**/*.vscode/
+
+# Archivos específicos de JetBrains Rider
+**/.idea/
+**/*.idea/
+**/*.iml
+**/*.iws
