@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 947899980596494448efb4aa68f0166b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position:
+  position:
     m_InternalValue: {x: 0, y: 0, z: 0}
 --- !u!33 &8654358463698132944
 MeshFilter:
@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad546af3588765645b69a2bbdbe5fdcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frameCounter: 25
 --- !u!114 &6879775759696010147
 MonoBehaviour:
   m_ObjectHideFlags: 0
