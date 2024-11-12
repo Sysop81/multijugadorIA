@@ -66,4 +66,13 @@ public class HelloWorldPlayer : NetworkBehaviour
         return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
     }
     
+    /// <summary>
+    /// Setter GetPosition
+    /// </summary>
+    /// <returns></returns>
+    public void SetPosition(Vector3 value)
+    {
+        position.Value = value;
+    }
+
 }
