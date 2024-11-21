@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private float moveForce = 3f;
+    [SerializeField] private float moveForce = 25f;
     [SerializeField] private float restartGamePlayTime = 3f;
     [SerializeField] private float powerUpForce = 20f;
     [SerializeField] private GameObject[] powerUpRings;
@@ -35,7 +35,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if(!IsOwner) return;
         
@@ -84,11 +84,11 @@ public class PlayerController : NetworkBehaviour
     {
         var powerUp = NetworkManager.Singleton.SpawnManager.SpawnedObjects[powerUpId];
         if(powerUp != null) powerUp.Despawn(true);
-        
+
         var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
-        if(player != null) player.hasPowerUp.Value = true; // TODO change to use the method 
+        if(player != null) player.hasPowerUp.Value = true;
     }
-    
+
     /// <summary>
     /// Method RequestActivePowerUpServerRpc
     /// Setter to hasPowerUp property
@@ -137,10 +137,10 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void OnEnable()
     {
-        //  Subscribe to OnPowerUpChanged method to listen a networkVariable changes 
+        //  Subscribe to OnPowerUpChanged method to listen a networkVariable changes
         hasPowerUp.OnValueChanged += OnPowerUpChanged;
     }
-    
+
     /// <summary>
     /// Method OnDisable [Handler]
     /// </summary>
@@ -149,7 +149,7 @@ public class PlayerController : NetworkBehaviour
         // Unsubscribe to OnPowerUpChanged method (Avoid error to despawn object)
         hasPowerUp.OnValueChanged -= OnPowerUpChanged;
     }
-    
+
     /// <summary>
     /// Method OnPowerUpChanged
     /// This method launch the corrutine when the player gets the powerUp
@@ -198,7 +198,7 @@ public class PlayerController : NetworkBehaviour
             Invoke("RestartGameClientRpc",restartGamePlayTime);
         }
 
-        if (IsOwner && other.gameObject.CompareTag("PowerUp"))
+        if (IsOwner && other.gameObject.CompareTag("PowerUp") && !hasPowerUp.Value)
         {
             RequestPickPowerUpServerRpc(NetworkManager.Singleton.LocalClientId,
                 other.GetComponent<NetworkObject>().NetworkObjectId);

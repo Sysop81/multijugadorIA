@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 265881602
+  GlobalObjectIdHash: 2678523650
   InScenePlacedSourceGlobalObjectIdHash: 2678523650
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff04908e7871fe41a8add07f866bdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveForce: 3
+  moveForce: 25
   restartGamePlayTime: 3
   powerUpForce: 10
   powerUpRings:
