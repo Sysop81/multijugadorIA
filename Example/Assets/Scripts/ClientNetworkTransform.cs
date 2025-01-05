@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class ClientNetworkTransform : NetworkTransform
 {
-    
+    /// <summary>
+    /// Method OnIsServerAuthoritative
+    /// overrides the method to set the client Driven mode
+    /// </summary>
+    /// <returns></returns>
     protected override bool OnIsServerAuthoritative()
     {
         return false;
