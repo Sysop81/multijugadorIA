@@ -1,12 +1,14 @@
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace QuickStart
 {
     public class SceneScript : NetworkBehaviour
     {
+        public SceneReference sceneReference;
         public TextMeshProUGUI canvasStatusText;
         public PlayerScript playerScript;
 
@@ -23,6 +25,20 @@ namespace QuickStart
         {
             if (playerScript != null)  
                 playerScript.CmdSendPlayerMessage();
+        }
+        
+        public void ButtonChangeScene()
+        {
+            if (isServer)
+            {
+                Scene scene = SceneManager.GetActiveScene();
+                if (scene.name == "MirrorSceneMyScene")
+                    NetworkManager.singleton.ServerChangeScene("MirrorSceneMyOtherScene");
+                else
+                    NetworkManager.singleton.ServerChangeScene("MirrorSceneMyScene");
+            }
+            else
+                Debug.Log("You are not Host.");
         }
     }
 }
