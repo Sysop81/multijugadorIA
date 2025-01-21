@@ -11,6 +11,7 @@ namespace QuickStart
         public SceneReference sceneReference;
         public TextMeshProUGUI canvasStatusText;
         public PlayerScript playerScript;
+        public TextMeshProUGUI canvasAmmoText;
 
         [SyncVar(hook = nameof(OnStatusTextChanged))]
         public string statusText;
@@ -39,6 +40,11 @@ namespace QuickStart
             }
             else
                 Debug.Log("You are not Host.");
+        }
+        
+        public void UIAmmo(int _value)
+        {
+            canvasAmmoText.text = "Ammo: " + _value;
         }
     }
 }

@@ -26,6 +26,9 @@ namespace QuickStart
         [SyncVar(hook = nameof(OnWeaponChanged))]
         public int activeWeaponSynced = 1;
         
+        private Weapon activeWeapon;
+        private float weaponCooldownTime;
+        
         void Awake()
         {
             // Load scene script on scene reference
@@ -35,6 +38,12 @@ namespace QuickStart
             foreach (var item in weaponArray)
                 if (item != null)
                     item.SetActive(false);
+            
+            if (selectedWeaponLocal < weaponArray.Length && weaponArray[selectedWeaponLocal] != null)
+            {
+                activeWeapon = weaponArray[selectedWeaponLocal].GetComponent<Weapon>();
+                sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+            }
         }
         
         void OnWeaponChanged(int _Old, int _New)
@@ -47,7 +56,20 @@ namespace QuickStart
             // enable new weapon
             // in range and not null
             if (0 < _New && _New < weaponArray.Length && weaponArray[_New] != null)
+            {
                 weaponArray[_New].SetActive(true);
+                activeWeapon = weaponArray[activeWeaponSynced].GetComponent<Weapon>();
+                if (isLocalPlayer)
+                    sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+            }
+            else
+            {   
+                // Set active weapon to null if weapon weaponArray[_New] is equal null
+                activeWeapon = null;
+                if (isLocalPlayer)
+                    sceneScript.UIAmmo(0);
+            }
+
         }
         
         [Command]
@@ -115,6 +137,17 @@ namespace QuickStart
             transform.Rotate(0, moveX, 0);
             transform.Translate(0, 0, moveZ);
             
+            if (Input.GetButtonDown("Fire1") ) //Fire1 is mouse 1st click
+            {
+                if (activeWeapon && Time.time > weaponCooldownTime && activeWeapon.weaponAmmo > 0)
+                {
+                    weaponCooldownTime = Time.time + activeWeapon.weaponCooldown;
+                    activeWeapon.weaponAmmo -= 1;
+                    sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+                    CmdShootRay();
+                }
+            }
+            
             if (Input.GetButtonDown("Fire2")) //Fire2 is mouse 2nd click and left alt
             {
                 selectedWeaponLocal += 1;
@@ -124,6 +157,21 @@ namespace QuickStart
 
                 CmdChangeActiveWeapon(selectedWeaponLocal);
             }
+        }
+        
+        [Command]
+        void CmdShootRay()
+        {
+            RpcFireWeapon();
+        }
+
+        [ClientRpc]
+        void RpcFireWeapon()
+        {
+            //bulletAudio.Play(); muzzleflash  etc
+            GameObject bullet = Instantiate(activeWeapon.weaponBullet, activeWeapon.weaponFirePosition.position, activeWeapon.weaponFirePosition.rotation);
+            bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * activeWeapon.weaponSpeed;
+            Destroy(bullet, activeWeapon.weaponLife);
         }
     }
 }
