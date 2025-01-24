@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -16,20 +17,46 @@ namespace QuickStart
         [SyncVar(hook = nameof(OnStatusTextChanged))]
         public string statusText;
 
+        public Button btnChangeScene;
+        
+        /// <summary>
+        /// Method Start [Life cycle] 
+        /// </summary>
+        private void Start()
+        {
+            // Only show the change scene btn in server
+            btnChangeScene.gameObject.SetActive(isServer);
+        }
+
+        /// <summary>
+        /// Method OnStatusTextChanged [Hook]
+        /// Subscribed method to manages the synchronized variable statusText.
+        /// </summary>
+        /// <param name="_Old">Old sync value</param>
+        /// <param name="_New">New sync value</param>
         void OnStatusTextChanged(string _Old, string _New)
         {
             //called from sync var hook, to update info on screen for all players
             canvasStatusText.text = statusText;
         }
-
+        
+        /// <summary>
+        /// Method ButtonSendMessage
+        /// Handle the canvas button UI
+        /// </summary>
         public void ButtonSendMessage()
         {
             if (playerScript != null)  
                 playerScript.CmdSendPlayerMessage();
         }
         
+        /// <summary>
+        /// Method ButtonChangeScene
+        /// Handle the canvas button UI to change scene
+        /// </summary>
         public void ButtonChangeScene()
         {
+            // Only the server change the scene
             if (isServer)
             {
                 Scene scene = SceneManager.GetActiveScene();
@@ -42,6 +69,11 @@ namespace QuickStart
                 Debug.Log("You are not Host.");
         }
         
+        /// <summary>
+        /// Method UIAmmo
+        /// This method update and show the available ammo
+        /// </summary>
+        /// <param name="_value"></param>
         public void UIAmmo(int _value)
         {
             canvasAmmoText.text = "Ammo: " + _value;

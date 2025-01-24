@@ -29,6 +29,9 @@ namespace QuickStart
         private Weapon activeWeapon;
         private float weaponCooldownTime;
         
+        /// <summary>
+        /// Method Awake [Life cycle]
+        /// </summary>
         void Awake()
         {
             // Load scene script on scene reference
@@ -39,13 +42,21 @@ namespace QuickStart
                 if (item != null)
                     item.SetActive(false);
             
+            // Select inital weapon and ammo
             if (selectedWeaponLocal < weaponArray.Length && weaponArray[selectedWeaponLocal] != null)
             {
+                weaponArray[selectedWeaponLocal].SetActive(true);
                 activeWeapon = weaponArray[selectedWeaponLocal].GetComponent<Weapon>();
                 sceneScript.UIAmmo(activeWeapon.weaponAmmo);
             }
         }
         
+        /// <summary>
+        /// Method OnWeaponChanged [Hook]
+        /// Method to which the synchronized variable activeWeaponSynced is subscribed. 
+        /// </summary>
+        /// <param name="_Old">Old value for SyncVar</param>
+        /// <param name="_New">New value for SyncVar</param>
         void OnWeaponChanged(int _Old, int _New)
         {
             // disable old weapon
@@ -59,37 +70,57 @@ namespace QuickStart
             {
                 weaponArray[_New].SetActive(true);
                 activeWeapon = weaponArray[activeWeaponSynced].GetComponent<Weapon>();
-                if (isLocalPlayer)
-                    sceneScript.UIAmmo(activeWeapon.weaponAmmo);
             }
             else
             {   
                 // Set active weapon to null if weapon weaponArray[_New] is equal null
                 activeWeapon = null;
-                if (isLocalPlayer)
-                    sceneScript.UIAmmo(0);
             }
+            
+            // Set UI info
+            if(isLocalPlayer) sceneScript.UIAmmo(activeWeapon ? activeWeapon.weaponAmmo:0);
 
         }
         
+        /// <summary>
+        /// Method CmdChangeActiveWeapon [Server RPC]
+        /// This method is executed from the client to indicate to the server the change of state in the synchronized variable
+        /// activeWeaponSynced
+        /// </summary>
+        /// <param name="newIndex"></param>
         [Command]
         public void CmdChangeActiveWeapon(int newIndex)
         {
             activeWeaponSynced = newIndex;
         }
-
+        
+        /// <summary>
+        /// Method CmdSendPlayerMessage [Server RPC]
+        /// </summary>
         [Command]
         public void CmdSendPlayerMessage()
         {
             if (sceneScript) 
                 sceneScript.statusText = $"{playerName} says hello {Random.Range(10, 99)}";
         }
-
+        
+        /// <summary>
+        /// Method OnNameChanged [Hook]
+        /// Subscribed method to manages the synchronized variable playerNameText.
+        /// </summary>
+        /// <param name="_Old">Old sync value</param>
+        /// <param name="_New">New sync value</param>
         void OnNameChanged(string _Old, string _New)
         {
             playerNameText.text = playerName;
         }
-
+        
+        /// <summary>
+        /// Method OnColorChanged [Hook]
+        /// Subscribed method to manages the synchronized variable playerMaterialClone.
+        /// </summary>
+        /// <param name="_Old">Old sync value</param>
+        /// <param name="_New">New sync value</param>
         void OnColorChanged(Color _Old, Color _New)
         {
             playerNameText.color = _New;
@@ -98,10 +129,15 @@ namespace QuickStart
             GetComponent<Renderer>().material = playerMaterialClone;
         }
         
+        /// <summary>
+        /// Method OnStartLocalPlayer [Override method]
+        /// This method set the initial setting for the spawned player
+        /// </summary>
         public override void OnStartLocalPlayer()
         {
             sceneScript.playerScript = this;
             Camera.main.transform.SetParent(transform);
+            Camera.main.transform.localRotation = Quaternion.identity; 
             Camera.main.transform.localPosition = new Vector3(0, 0, 0);
             
             floatingInfo.transform.localPosition = new Vector3(0, -0.3f, 0.6f);
@@ -111,7 +147,12 @@ namespace QuickStart
             Color color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
             CmdSetupPlayer(name, color);
         }
-
+        
+        /// <summary>
+        /// Method CmdSetupPlayer [Server RCP]
+        /// </summary>
+        /// <param name="_name">Player name</param>
+        /// <param name="_col">Player color</param>
         [Command]
         public void CmdSetupPlayer(string _name, Color _col)
         {
@@ -121,7 +162,9 @@ namespace QuickStart
             sceneScript.statusText = $"{playerName} joined.";
         }
         
-
+        /// <summary>
+        /// Method Update [Life cycle]
+        /// </summary>
         void Update()
         {
             if (!isLocalPlayer)
@@ -130,14 +173,16 @@ namespace QuickStart
                 floatingInfo.transform.LookAt(Camera.main.transform);
                 return;
             }
-
+            
+            // Only for local player
             float moveX = Input.GetAxis("Horizontal") * Time.deltaTime * 110.0f;
             float moveZ = Input.GetAxis("Vertical") * Time.deltaTime * 4f;
 
             transform.Rotate(0, moveX, 0);
             transform.Translate(0, 0, moveZ);
             
-            if (Input.GetButtonDown("Fire1") ) //Fire1 is mouse 1st click
+            // Fire1 is mouse 1st click.  This is a fire button
+            if (Input.GetButtonDown("Fire1") ) 
             {
                 if (activeWeapon && Time.time > weaponCooldownTime && activeWeapon.weaponAmmo > 0)
                 {
@@ -148,7 +193,8 @@ namespace QuickStart
                 }
             }
             
-            if (Input.GetButtonDown("Fire2")) //Fire2 is mouse 2nd click and left alt
+            // Fire2 is mouse 2nd click and left alt. Change weapon button
+            if (Input.GetButtonDown("Fire2")) 
             {
                 selectedWeaponLocal += 1;
 
@@ -159,12 +205,21 @@ namespace QuickStart
             }
         }
         
+        /// <summary>
+        /// Method CmdShootRay [Server RCP]
+        /// This method is called by the client who fire the weapon
+        /// </summary>
         [Command]
         void CmdShootRay()
         {
+            // The server calling the RpcFireWeapon method
             RpcFireWeapon();
         }
-
+        
+        /// <summary>
+        /// Method RpcFireWeapon [Client RCP]
+        /// All client execute this method
+        /// </summary>
         [ClientRpc]
         void RpcFireWeapon()
         {
