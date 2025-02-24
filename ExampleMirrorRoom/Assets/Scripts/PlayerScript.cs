@@ -34,56 +34,88 @@ namespace QuickStart
         
         private bool isGenerated;
         
+        /// <summary>
+        /// Method OnEnable
+        /// Handle the subscribe method to events
+        /// </summary>
         private void OnEnable()
         {
             // Subscribe to OnSceneLoaded
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
-
+        
+        /// <summary>
+        /// Method OnDisable
+        /// Handle the unsubscribe method to events
+        /// </summary>
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        // Handler to execute in clients whe scene is changed
+        /// <summary>
+        /// Method OnSceneLoaded
+        /// Handler to execute in clients when the scene is changed
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="mode"></param>
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // TODO checking this  and refact
-            
+            // Get sceneScript reference
             sceneScript = GameObject.Find("SceneReference").GetComponent<SceneReference>().sceneScript;
             
-            // Delete cameras
+            // Manage local player camera and canvas info
             if (isLocalPlayer)
             {
-               
-                Camera[] allCameras = FindObjectsOfType<Camera>();
-                if (allCameras.Length > 1)
-                {
-                    foreach (Camera cam in allCameras)
-                    {
-                        if (cam.gameObject.name != "PlayerMainCamera")
-                        {
-                            Destroy(cam.gameObject);
-                        }
-                    }
-                }
+                RemovePlayerCamera();
+               SetPlayerCamera();
+                
                 // Load canvas info status
                 sceneScript.statusText = $"{playerName} joined.";
                 sceneScript.playerScript = this;
                 sceneScript.UIAmmo(activeWeapon.weaponAmmo);
             }
-            
-            
         }
         
+        /// <summary>
+        /// Method RemovePlayerCamera
+        /// This method remove the player main camera.
+        /// </summary>
+        private void RemovePlayerCamera()
+        {
+            Camera[] allCameras = FindObjectsOfType<Camera>();
+            if (allCameras.Length > 1)
+            {
+                foreach (Camera cam in allCameras)
+                {
+                    if (cam.gameObject.name == "PlayerMainCamera") Destroy(cam.gameObject);
+                }
+            }
+        }
         
+        /// <summary>
+        /// Method SetPlayerCamera
+        /// This method get the current scene main camera an set into the player
+        /// </summary>
+        private void SetPlayerCamera()
+        {
+            Camera.main.transform.SetParent(transform);
+            Camera.main.transform.localRotation = Quaternion.identity; 
+            Camera.main.transform.localPosition = new Vector3(0, 0, 0);
+            Camera.main.name = "PlayerMainCamera";
+            floatingInfo.transform.localPosition = new Vector3(0, -0.3f, 0.6f);
+            floatingInfo.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            isGenerated = true;
+        }
+
+
         /// <summary>
         /// Method Awake [Life cycle]
         /// </summary>
         void Awake()
         {
             // Load scene script on scene reference
-            sceneScript = /*GameObject.Find("SceneScript").GetComponent<SceneScript>();*/GameObject.Find("SceneReference").GetComponent<SceneReference>().sceneScript;
+            sceneScript = GameObject.Find("SceneReference").GetComponent<SceneReference>().sceneScript;
             
             // disable all weapons
             foreach (var item in weaponArray)
@@ -133,7 +165,6 @@ namespace QuickStart
             
             // Set UI info
             if(isLocalPlayer) sceneScript.UIAmmo(activeWeapon ? activeWeapon.weaponAmmo:0);
-
         }
         
         /// <summary>
@@ -155,10 +186,7 @@ namespace QuickStart
         public void CmdSendPlayerMessage()
         {
             if (sceneScript)
-            {
                 sceneScript.statusText = $"{playerName} says hello {Random.Range(10, 99)}";
-            } 
-                
         }
         
         /// <summary>
@@ -196,25 +224,11 @@ namespace QuickStart
             sceneScript.playerScript = this;
             sceneScript.UIAmmo(activeWeapon.weaponAmmo);
             
-            
-            if (!isGenerated)
-            {
-                Camera.main.transform.SetParent(transform);
-                Camera.main.transform.localRotation = Quaternion.identity; 
-                Camera.main.transform.localPosition = new Vector3(0, 0, 0);
-                Camera.main.name = "PlayerMainCamera";
-                floatingInfo.transform.localPosition = new Vector3(0, -0.3f, 0.6f);
-                floatingInfo.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
-                //string name = "Player" + Random.Range(100, 999);
-                //Color color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                //CmdSetupPlayer(name, color);
-                isGenerated = true;
-            }
+            if(!isGenerated) SetPlayerCamera();
         }
         
 
-        /// <summary>
+        /*/// <summary>
         /// Method CmdSetupPlayer [Server RCP]
         /// </summary>
         /// <param name="_name">Player name</param>
@@ -226,7 +240,7 @@ namespace QuickStart
             playerName = _name;
             playerColor = _col;
             sceneScript.statusText = $"{playerName} joined.";
-        }
+        }*/
         
         /// <summary>
         /// Method Update [Life cycle]

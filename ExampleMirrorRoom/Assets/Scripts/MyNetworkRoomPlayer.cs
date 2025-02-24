@@ -20,15 +20,19 @@ public class MyNetworkRoomPlayer : NetworkRoomPlayer
     [SyncVar] public Color playerColor;
     [SerializeField] private Color[] colorByIndex;
     
-    // Start is called before the first frame update
+    /// <summary>
+    /// Method Start
+    /// Start is called before the first frame update
+    /// </summary>
     public override void Start()
     {
         base.Start();
-        
+        // Load panel for all
         inputPanelController = GameObject.Find("Input Panel").GetComponent<InputPanelController>();
 
         if (isServer)
         {
+            // Handle the server components
             inputPanelController.btnStart.gameObject.SetActive(true);
             inputPanelController.btnStart.interactable = ((NRMExt)NetworkManager.singleton).allPlayersReady; 
             inputPanelController.btnStart.onClick.RemoveAllListeners();
@@ -38,6 +42,7 @@ public class MyNetworkRoomPlayer : NetworkRoomPlayer
 
         if (isLocalPlayer)
         {
+            // Handle the localplayer components
             inputPanelController.btnReady.onClick.AddListener(delegate { PlayerReadyToggle();});
             inputPanelController.inputPlayerName.onValueChanged.AddListener(delegate(string newStringInput) { CmdPlayerSetName(newStringInput); });
             inputPanelController.btnCameraLeft.onClick.AddListener(delegate { CmdUpdateSelectedPlayer(0); });
@@ -49,13 +54,21 @@ public class MyNetworkRoomPlayer : NetworkRoomPlayer
         }
     }
     
+    /// <summary>
+    /// Method CmdApplyColor
+    /// This method updates the player color
+    /// </summary>
     [Command]
     private void CmdApplyColor()
     {
         playerColor = colorByIndex[index];
     }
     
-    
+    /// <summary>
+    /// Method CmdPlayerSetName
+    /// This method handle the player name
+    /// </summary>
+    /// <param name="newName"></param>
     [Command]
     private void CmdPlayerSetName(string newName)
     {
@@ -66,13 +79,22 @@ public class MyNetworkRoomPlayer : NetworkRoomPlayer
         }
         
     }
-
+    
+    /// <summary>
+    /// Method CmdUpdateSelectedPlayer
+    /// This method handles the player index (type of player) to spawn in the game
+    /// </summary>
+    /// <param name="indexSelected"></param>
     [Command(requiresAuthority = false)]
     private void CmdUpdateSelectedPlayer(int indexSelected)
     {
         playerPrefabIndexSelected = indexSelected;
     }
     
+    /// <summary>
+    /// Method CmdCreatePlayerPanel
+    /// This method Instatiate the panel prefab in the players list
+    /// </summary>
     [Command(requiresAuthority = false)]
     private void CmdCreatePlayerPanel()
     {
@@ -80,11 +102,21 @@ public class MyNetworkRoomPlayer : NetworkRoomPlayer
         NetworkServer.Spawn(myRoomPlayerPanel);
     }
     
+    /// <summary>
+    /// Method PlayerReadyToggle
+    /// This method handles the ready state
+    /// </summary>
     void PlayerReadyToggle()
     {
         CmdChangeReadyState(!readyToBegin);
     }
-
+    
+    /// <summary>
+    /// Method ReadyStateChanged
+    /// This method changes the ready state on the player panel
+    /// </summary>
+    /// <param name="oldReadyState"></param>
+    /// <param name="newReadyState"></param>
     public override void ReadyStateChanged(bool oldReadyState, bool newReadyState)
     {
         if (isServer)

@@ -11,16 +11,27 @@ public class NRMExt : NetworkRoomManager
     [SerializeField] public GameObject[] playerPrefabs;
     private Button _btnStartGame;
     
+    /// <summary>
+    /// Method OnRoomServerPlayersReady
+    /// </summary>
     public override void OnRoomServerPlayersReady()
     {
         HandleStartGame(true);
     }
-
+    
+    /// <summary>
+    /// Method OnRoomServerPlayersNotReady
+    /// </summary>
     public override void OnRoomServerPlayersNotReady()
     {
         HandleStartGame(false);
     }
-
+    
+    /// <summary>
+    /// Method HandleStartGame
+    /// This method handle the start buttom "interactable or not"
+    /// </summary>
+    /// <param name="isInteractable"></param>
     private void HandleStartGame(bool isInteractable)
     {
         if (!_btnStartGame)
@@ -42,12 +53,23 @@ public class NRMExt : NetworkRoomManager
             _btnStartGame.onClick.AddListener(StartGame); 
         }
     }*/
-
+    
+    /// <summary>
+    /// Method StartGame
+    /// This method load the gameplay scene
+    /// </summary>
     public void StartGame()
     {
         ServerChangeScene(GameplayScene);
     }
     
+    /// <summary>
+    /// Method OnRoomServerCreateGamePlayer
+    /// This method build the player with the options selected in the game room
+    /// </summary>
+    /// <param name="conn">Client connection</param>
+    /// <param name="roomPlayer">Room player based on the connection</param>
+    /// <returns></returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnectionToClient conn, GameObject roomPlayer)
     {
         
@@ -60,6 +82,13 @@ public class NRMExt : NetworkRoomManager
         return SetPlayerInfo(playerPref,roomPlayerComponent);
     }
     
+    /// <summary>
+    /// Method SetPlayerInfo
+    /// This method update the player with the options selected
+    /// </summary>
+    /// <param name="playerP">Player prefab to be spawn</param>
+    /// <param name="roomPlayerComponent">Configuration of the player</param>
+    /// <returns></returns>
     private GameObject SetPlayerInfo(GameObject playerP,MyNetworkRoomPlayer roomPlayerComponent)
     {
         

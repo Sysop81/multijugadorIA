@@ -2532,6 +2532,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkRoomManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5523757726393926790, guid: b41e70ebf211a454fab395fd6ef8265a,
+        type: 3}
+      propertyPath: port
+      value: 7778
+      objectReference: {fileID: 0}
     - target: {fileID: 9079627976032566414, guid: b41e70ebf211a454fab395fd6ef8265a,
         type: 3}
       propertyPath: RoomScene
