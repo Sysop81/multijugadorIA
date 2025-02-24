@@ -2570,6 +2570,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9079627976032566414, guid: b41e70ebf211a454fab395fd6ef8265a,
         type: 3}
+      propertyPath: maxConnections
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9079627976032566414, guid: b41e70ebf211a454fab395fd6ef8265a,
+        type: 3}
       propertyPath: roomPlayerPrefab
       value: 
       objectReference: {fileID: -3020749760353465645, guid: f8f6deb3fc488d741bcde97625d581cc,

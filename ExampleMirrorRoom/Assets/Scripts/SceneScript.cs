@@ -16,8 +16,9 @@ namespace QuickStart
 
         [SyncVar(hook = nameof(OnStatusTextChanged))]
         public string statusText;
-
         public Button btnChangeScene;
+
+        [SerializeField]private Button btnStopServer;
         
         /// <summary>
         /// Method Start [Life cycle] 
@@ -26,6 +27,7 @@ namespace QuickStart
         {
             // Only show the change scene btn in server
             btnChangeScene.gameObject.SetActive(isServer);
+            btnStopServer.gameObject.SetActive(isServer);
         }
 
         /// <summary>
@@ -77,6 +79,22 @@ namespace QuickStart
         public void UIAmmo(int _value)
         {
             canvasAmmoText.text = "Ammo: " + _value;
+        }
+        
+        /// <summary>
+        /// Method StopServer
+        /// </summary>
+        public void StopServer()
+        {
+            NetworkManager.singleton.StopServer();
+        }
+        
+        /// <summary>
+        /// Method StopClient
+        /// </summary>
+        public void StopClient()
+        {
+            NetworkManager.singleton.StopClient();
         }
     }
 }

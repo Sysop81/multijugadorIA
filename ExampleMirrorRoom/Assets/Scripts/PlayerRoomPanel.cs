@@ -25,29 +25,42 @@ public class PlayerRoomPanel : NetworkBehaviour
         DrawPlayerNameText();
         DrawReadyText();
     }
-
+    
+    /// <summary>
+    /// Method SetPlayerName [Hook]
+    /// </summary>
+    /// <param name="oldName"></param>
+    /// <param name="newName"></param>
     void SetPlayerName(string oldName,string newName)
     {
         playerName = newName;
         DrawPlayerNameText();
     }
+    
+    /// <summary>
+    /// Method DrawPlayerNameText
+    /// </summary>
     void DrawPlayerNameText()
     {
         playerNameTxt.text = playerName;
     }
-
+    
+    /// <summary>
+    /// Method SetPlayerReady [Hook]
+    /// </summary>
+    /// <param name="oldReady"></param>
+    /// <param name="newReady"></param>
     void SetPlayerReady(bool oldReady, bool newReady)
     {
         playerReady = newReady;
         DrawReadyText();
     }
+    
+    /// <summary>
+    /// Method DrawReadyText
+    /// </summary>
     void DrawReadyText()
     {
-        /*if (playerReady)
-            playerReadyTxt.text = "READY";
-        else
-            playerReadyTxt.text = "NOT READY";*/
-        
-        playerNameTxt.text = playerReady ? "READY" : "NOT READY";
+        playerReadyTxt.text = playerReady ? "READY" : "NOT READY";
     }
 }
