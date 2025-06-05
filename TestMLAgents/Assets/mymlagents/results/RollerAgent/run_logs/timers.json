@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1746528327",
+        "python_version": "3.10.12 | packaged by Anaconda, Inc. | (main, Jul  5 2023, 19:01:18) [MSC v.1916 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\joseRamon\\miniconda3\\envs\\mlagents\\Scripts\\mlagents-learn .\\Configuration\\RollerAgentconfiguration.yaml --run-id RollerAgent --force",
+        "mlagents_version": "1.1.0",
+        "mlagents_envs_version": "1.1.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.2.2+cpu",
+        "numpy_version": "1.23.5",
+        "end_time_seconds": "1746528352"
+    },
+    "total": 25.109038700000383,
+    "count": 1,
+    "self": 0.006113199982792139,
+    "children": {
+        "run_training.setup": {
+            "total": 0.05901119997724891,
+            "count": 1,
+            "self": 0.05901119997724891
+        },
+        "TrainerController.start_learning": {
+            "total": 25.043914300040342,
+            "count": 1,
+            "self": 6.510003004223108e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 25.043830599985085,
+                    "count": 1,
+                    "self": 25.043830599985085
+                },
+                "TrainerController._save_models": {
+                    "total": 1.8600025214254856e-05,
+                    "count": 1,
+                    "self": 1.8600025214254856e-05
+                }
+            }
+        }
+    }
+}
